@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getWeatherForecast, getWeatherSummary } from '@/services/WeatherService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faCloud, faSmog, faCloudRain, faCloudShowersHeavy, faSnowflake, faBolt, IconDefinition} from '@fortawesome/free-solid-svg-icons';
+import { LatLng } from 'leaflet';
 
 const weatherIcons: { [key: number]: IconDefinition } = {
     0: faSun,
@@ -51,12 +52,18 @@ interface Summary {
     comment: string;
 }
 
-const WeatherTable = () => {
+interface WeatherTableProps {
+    location: LatLng | null;
+}
+
+const WeatherTable = ({ location }: WeatherTableProps) => {
     const [forecast, setForecast] = useState<Forecast[]>([]);
     const [summary, setSummary] = useState<Summary | null>(null);
     const [locationError, setLocationError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (!location) return;
+
         const fetchForecast = async (latitude: number, longitude: number) => {
             try {
                 console.log(`Fetching weather forecast for coordinates: Latitude ${latitude}, Longitude ${longitude}`);
@@ -76,22 +83,9 @@ const WeatherTable = () => {
             }
         };
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    fetchForecast(latitude, longitude);
-                    fetchSummary(latitude, longitude);
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                    setLocationError('Unable to retrieve your location');
-                }
-            );
-        } else {
-            setLocationError('Geolocation is not supported by this browser');
-        }
-    }, []);
+        fetchForecast(location.lat, location.lng);
+        fetchSummary(location.lat, location.lng);
+    }, [location]);
 
     if (locationError) {
         return <div>{locationError}</div>;
