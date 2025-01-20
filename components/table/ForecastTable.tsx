@@ -1,5 +1,5 @@
-// filepath: /c:/Users/huber/vscode/WeatherApp-frontend/components/table/ForecastTable.tsx
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { getWeatherForecast } from "@/services/WeatherService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { LatLng } from "leaflet";
 
+// Map of weather codes to FontAwesome icons
 const weatherIcons: { [key: number]: IconDefinition } = {
   0: faSun,
   1: faCloud,
@@ -46,6 +47,7 @@ const weatherIcons: { [key: number]: IconDefinition } = {
   99: faBolt,
 };
 
+// Interface defining the structure of a forecast object
 interface Forecast {
   date: string;
   weatherCode: number;
@@ -54,39 +56,47 @@ interface Forecast {
   estimatedEnergy: number;
 }
 
+// Props interface for ForecastTable
 interface ForecastTableProps {
-  location: LatLng | null;
+  location: LatLng | null; // Location passed from parent
 }
 
+// ForecastTable component
 const ForecastTable = ({ location }: ForecastTableProps) => {
+  // State to store the forecast data
   const [forecast, setForecast] = useState<Forecast[]>([]);
 
+  // Fetch weather forecast when location changes
   useEffect(() => {
     if (!location) return;
 
     const fetchForecast = async (latitude: number, longitude: number) => {
       try {
+        // Fetch forecast data using the service
         const data = await getWeatherForecast(latitude, longitude);
-        setForecast(data);
+        setForecast(data); // Update the state with fetched data
       } catch (error) {
         console.error("Error fetching weather forecast:", error);
       }
     };
 
-    fetchForecast(location.lat, location.lng);
+    fetchForecast(location.lat, location.lng); // Call the fetch function with location coordinates
   }, [location]);
 
+  // Render loading message if forecast data is not yet available
   if (forecast.length === 0) {
     return <div>Loading forecast...</div>;
   }
 
   return (
     <div className="flex flex-wrap justify-center gap-4 mb-8">
+      {/* Map over forecast data to render each day's weather card */}
       {forecast.map((day, index) => (
         <div
           key={index}
           className="flex flex-col items-center justify-between p-4 bg-neutral-100 dark:bg-neutral-800 rounded-xl shadow-md w-40 h-48"
         >
+          {/* Date display */}
           <div className="text-center font-medium text-neutral-700 dark:text-neutral-200">
             {new Date(day.date).toLocaleDateString("pl-PL", {
               day: "2-digit",
@@ -94,14 +104,20 @@ const ForecastTable = ({ location }: ForecastTableProps) => {
               year: "numeric",
             })}
           </div>
+
+          {/* Weather icon */}
           <FontAwesomeIcon
-            icon={weatherIcons[day.weatherCode]}
-            size="2x"
+            icon={weatherIcons[day.weatherCode]} // Display corresponding icon for weather code
+            size="3x"
             className="text-neutral-600 dark:text-neutral-300 my-2"
           />
+
+          {/* Temperature range */}
           <div className="text-center text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
             {day.maxTemperature}°C / {day.minTemperature}°C
           </div>
+
+          {/* Estimated energy display */}
           <div className="text-center text-sm text-neutral-500 dark:text-neutral-400">
             {day.estimatedEnergy} kWh
           </div>
