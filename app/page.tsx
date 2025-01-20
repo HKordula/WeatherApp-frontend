@@ -7,12 +7,15 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { Input } from "@/components/ui/input";
 import ForecastTable from "@/components/table/ForecastTable";
 import WeeklySummary from "@/components/table/WeeklySummary";
+import { LatLng } from "leaflet";
+import L from "leaflet";
+
 
 // Dynamically import MapSelector.
 const MapSelector = dynamic(() => import("@/components/map/MapSelector"), { ssr: false });
 
 export default function Home() {
-  const [location, setLocation] = useState<any>(null); // State to store location coordinates
+  const [location, setLocation] = useState<LatLng | null>(null); // State to store location coordinates
   const [cityName, setCityName] = useState<string>("your location"); // State to store the name of the city
   const [searchQuery, setSearchQuery] = useState<string>(""); // State to store the search query for city or coordinates
 
@@ -36,15 +39,10 @@ export default function Home() {
     }
   };
 
-  // State to store error messages
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   // Function to fetch coordinates from a city name using OpenStreetMap API
   const fetchCoordinates = async (city: string) => {
-    // Validate input for non-empty city name
     if (!city.trim()) {
-      setErrorMessage("Please enter a city name or coordinates.");
-      return;
+      return; // Skip if the city name is empty
     }
 
     try {
@@ -56,16 +54,13 @@ export default function Home() {
       // If coordinates found, update location and fetch city name
       if (data && data.length > 0) {
         const { lat, lon } = data[0];
-        const newLocation = { lat: parseFloat(lat), lng: parseFloat(lon) };
+        const newLocation = new L.LatLng(parseFloat(lat), parseFloat(lon));
         setLocation(newLocation);
+
         fetchCityName(newLocation.lat, newLocation.lng);
-        setErrorMessage(null); // Clear error if successful
-      } else {
-        setErrorMessage("City not found. Please check the spelling or try again.");
       }
     } catch (error) {
       console.error("Failed to fetch coordinates:", error);
-      setErrorMessage("An error occurred. Please try again later.");
     }
   };
 
@@ -75,8 +70,9 @@ export default function Home() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const newLocation = { lat: latitude, lng: longitude };
+          const newLocation = new L.LatLng(latitude, longitude);
           setLocation(newLocation);
+
           fetchCityName(latitude, longitude);
         },
         (error) => {
