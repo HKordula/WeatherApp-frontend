@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# WeatherApp-frontend
 
-First, run the development server:
+A Next.js application that serves as the frontend for the WeatherApp project. It provides a user-friendly interface for accessing weather forecasts and summaries using the WeatherApp backend.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Search for weather information by city or coordinates.
+- View a 7-day weather forecast, including:
+  - Weather conditions.
+  - Minimum and maximum temperatures.
+  - Estimated solar energy production.
+- Access weekly weather summaries, including:
+  - Average pressure.
+  - Average sun exposure.
+  - Temperature extremes.
+- Interactive map for location selection.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Backend Integration
 
-To learn more about Next.js, take a look at the following resources:
+This frontend is designed to work seamlessly with the [WeatherApp Backend](https://github.com/HKordula/WeatherApp-backend), which provides the necessary APIs for weather data.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Backend Repository**: [HKordula/WeatherApp-backend](https://github.com/HKordula/WeatherApp-backend)
+- **Backend Technologies**: Spring Boot, OpenMeteo API.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Setting Up the Backend
 
-## Deploy on Vercel
+1. Clone the backend repository:
+   ```bash
+   git clone https://github.com/HKordula/WeatherApp-backend.git
+   cd WeatherApp-backend
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Follow the setup instructions in the backend `README.md` to configure and run the API.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Ensure the backend API is running on `http://localhost:8080`, or update the frontend configuration if the API is hosted elsewhere.
+
+---
+
+## Technologies Used
+
+- **Next.js**: Framework for server-side rendering and building React applications.
+- **React.js**: Core library for building the user interface.
+- **Leaflet**: Interactive maps for location selection.
+- **FontAwesome**: Icons for weather conditions.
+- **TypeScript**: Type-safe development.
+
+---
+
+## Setup and Installation
+
+### Prerequisites
+
+Ensure that you have the following installed:
+- Node.js (v16 or higher)
+- npm, yarn, or pnpm (package managers)
+
+### Installation
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/HKordula/WeatherApp-frontend.git
+   cd WeatherApp-frontend
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+
+3. **Run the Development Server**:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   ```
+
+4. **Access the Application**:
+   Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+
+---
+
+## API Endpoints
+
+This frontend communicates with the WeatherApp backend's REST API:
+
+### 1. Get 7-Day Forecast
+**URL**: `/api/weather/forecast`  
+**Method**: `GET`  
+**Query Parameters**:
+- `latitude` (double): Latitude of the location.
+- `longitude` (double): Longitude of the location.
+
+### 2. Get Weekly Weather Summary
+**URL**: `/api/weather/summary`  
+**Method**: `GET`  
+**Query Parameters**:
+- `latitude` (double): Latitude of the location.
+- `longitude` (double): Longitude of the location.
+
+---
+
+## Deployment
+
+This application can be deployed using any platform that supports Next.js, such as Vercel.
+
+### Deploy on Vercel
+
+1. Install the [Vercel CLI](https://vercel.com/cli) (optional):
+   ```bash
+   npm install -g vercel
+   ```
+
+2. Deploy the application:
+   ```bash
+   vercel
+   ```
+
+3. Follow the prompts to complete the deployment process.
+
+For detailed deployment documentation, visit the [Next.js Deployment Guide](https://nextjs.org/docs/app/building-your-application/deploying).
