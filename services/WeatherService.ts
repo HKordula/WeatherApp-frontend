@@ -22,7 +22,7 @@ export const getWeatherForecast = async (latitude: number, longitude: number): P
   try {
     // Make a GET request to backend API
     const response = await axios.get(
-      `http://localhost:8080/api/weather/forecast?latitude=${latitude}&longitude=${longitude}`
+      `https://weatherapp-backend-adhy.onrender.com/api/weather/forecast?latitude=${latitude}&longitude=${longitude}`
     );
 
     // Map the API response to the `Forecast` interface
@@ -44,7 +44,7 @@ export const getWeatherSummary = async (latitude: number, longitude: number): Pr
   try {
     // Make a GET request to backend API
     const response = await axios.get(
-      `http://localhost:8080/api/weather/summary?latitude=${latitude}&longitude=${longitude}`
+      `https://weatherapp-backend-adhy.onrender.com/api/weather/summary?latitude=${latitude}&longitude=${longitude}`
     );
 
     // Extract and return the summary data from the API response
