@@ -7,15 +7,13 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { Input } from "@/components/ui/input";
 import ForecastTable from "@/components/table/ForecastTable";
 import WeeklySummary from "@/components/table/WeeklySummary";
-import { LatLng } from "leaflet";
-import L from "leaflet";
-
 
 // Dynamically import MapSelector.
 const MapSelector = dynamic(() => import("@/components/map/MapSelector"), { ssr: false });
 
 export default function Home() {
-  const [location, setLocation] = useState<LatLng | null>(null); // State to store location coordinates
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [location, setLocation] = useState<any>(null); // State to store location coordinates
   const [cityName, setCityName] = useState<string>("your location"); // State to store the name of the city
   const [searchQuery, setSearchQuery] = useState<string>(""); // State to store the search query for city or coordinates
 
@@ -41,8 +39,9 @@ export default function Home() {
 
   // Function to fetch coordinates from a city name using OpenStreetMap API
   const fetchCoordinates = async (city: string) => {
+    // Validate input for non-empty city name
     if (!city.trim()) {
-      return; // Skip if the city name is empty
+      return;
     }
 
     try {
@@ -54,9 +53,8 @@ export default function Home() {
       // If coordinates found, update location and fetch city name
       if (data && data.length > 0) {
         const { lat, lon } = data[0];
-        const newLocation = new L.LatLng(parseFloat(lat), parseFloat(lon));
+        const newLocation = { lat: parseFloat(lat), lng: parseFloat(lon) };
         setLocation(newLocation);
-
         fetchCityName(newLocation.lat, newLocation.lng);
       }
     } catch (error) {
@@ -70,9 +68,8 @@ export default function Home() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const newLocation = new L.LatLng(latitude, longitude);
+          const newLocation = { lat: latitude, lng: longitude };
           setLocation(newLocation);
-
           fetchCityName(latitude, longitude);
         },
         (error) => {
